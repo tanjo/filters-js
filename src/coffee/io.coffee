@@ -1,17 +1,25 @@
 class IO
-  constructor: @inputId @previewId ->
-    unless document
-      @isAvailable = false
-      return @
-    @isAvailable = true
+  constructor: (@inputId, @previewId) ->
 
-  preview: () ->
+  preview: (completion) ->
+    unless document
+      return
+    img = document.querySelector @previewId
     input = document.querySelector @inputId
     input.onchange = () ->
       fileList = input.files
-      render = new FileReader()
-      render.readAsDataURL fileList[0]
-      render.onload = () ->
-        document.querySelector(@previewId).src = render.result
+      reader = new FileReader()
+      reader.onload = () ->
+        unless document
+          return
+        img.src = reader.result
+        completion(reader.result)
+        return
+      reader.readAsDataURL fileList[0]
+      return
+    return
 
-module.export = IO
+if typeof module isnt 'undefined' and typeof module.exports isnt 'undefined'
+  module.export = IO
+else
+  window.IO = IO

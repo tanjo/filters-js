@@ -1,7 +1,9 @@
 extends ./template/header
 
 block contents
-  div
-    img#preview
-  div
-    input(type="file" accept="image/*" id="getfile")
+  #contents
+    div
+      img#preview
+      canvas#result
+    div
+      input#getfile(type="file" accept="image/*")

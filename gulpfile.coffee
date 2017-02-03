@@ -2,12 +2,14 @@ gulp = require 'gulp'
 coffee = require 'gulp-coffee'
 pug = require 'gulp-pug'
 sass = require 'gulp-sass'
+concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
 minifyCss = require 'gulp-minify-css'
-concat = require 'gulp-concat'
+del = require 'del'
+runSequence = require 'run-sequence'
 
-gulp.task 'browserify', () ->
-  browserify './'
+gulp.task 'clean', () ->
+  del './gen/**/*'
 
 gulp.task 'coffee', () ->
   gulp.src './src/coffee/*.coffee'
@@ -37,4 +39,14 @@ gulp.task 'css', () ->
     .pipe minifyCss()
     .pipe gulp.dest './bin/css'
 
-gulp.task 'compile', ['coffee', 'sass', 'pug', 'js', 'css']
+gulp.task 'compile', () ->
+  runSequence('clean', 'coffee', 'sass', 'pug', 'js', 'css')
+
+gulp.task 'default', () ->
+  runSequence('compile')
+
+gulp.task 'watch', () ->
+  coffeePath = './src/coffee/*.coffee'
+  pugPath = './src/pug/*.pug'
+  sassPath = './src/sass/*.scss'
+  gulp.watch [coffeePath, pugPath, sassPath], ['compile']
