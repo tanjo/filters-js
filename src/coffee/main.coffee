@@ -8,6 +8,21 @@ draw = (img) ->
   imageData = ctx.getImageData 0, 0, canvas.width, canvas.height
   data = imageData.data
 
+
+  save = () ->
+    window.open canvas.toDataURL 'image/png'
+    gh = canvas.toDataURL 'png'
+    a = document.createElement 'a'
+    a.href = gh
+    a.download = 'image.png'
+    a.click()
+
+  saveButton = document.getElementById 'save'
+  saveButton.disabled = null
+  saveButton.addEventListener 'click', save
+
+  # ---------------------------------------------------------
+
   original = () ->
     ctx.putImageData imageData, 0, 0
     return
