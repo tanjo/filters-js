@@ -4,7 +4,7 @@ pug = require 'gulp-pug'
 sass = require 'gulp-sass'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
-minifyCss = require 'gulp-minify-css'
+cleanCSS = require 'gulp-clean-css'
 del = require 'del'
 runSequence = require 'run-sequence'
 
@@ -36,7 +36,7 @@ gulp.task 'js', () ->
 gulp.task 'css', () ->
   gulp.src ['./gen/css/*.css']
     .pipe concat 'filters.css'
-    .pipe minifyCss()
+    .pipe cleanCSS()
     .pipe gulp.dest './bin/css'
 
 gulp.task 'compile', () ->
