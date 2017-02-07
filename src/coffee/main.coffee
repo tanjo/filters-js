@@ -314,8 +314,66 @@ draw = (img) ->
   pixelizationButton.addEventListener 'click', pixelization
 
   # ---------------------------------------------------------
+
+  binarization = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    THRESHOLD = 127
+    for i in [0...data.length] by 4
+      outData[i] = if data[i] > THRESHOLD then 255 else 0
+      outData[i + 1] = if data[i + 1] > THRESHOLD then 255 else 0
+      outData[i + 2] = if data[i + 2] > THRESHOLD then 255 else 0
+      outData[i + 3] = data[i+3]
+    ctx.putImageData out, 0, 0
+    return
+
+  binarizationButton = document.getElementById 'binarization'
+  binarizationButton.addEventListener 'click', binarization
+
   # ---------------------------------------------------------
+
+  percentileMethod = () ->
+    return
+
+  percentileMethodButton = document.getElementById 'percentile_method'
+  percentileMethodButton.addEventListener 'click', percentileMethod
+
   # ---------------------------------------------------------
+
+  pixelizationHard = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    for y in [0...imageData.height-7] by 15
+      for x in [0...imageData.width-7] by 15
+        sum = [0,0,0,0]
+        count = 0
+        for dy in [0..14]
+          for dx in [0..14]
+            yy = y + dy
+            xx = x + dx
+            if xx < imageData.width and yy < imageData.height
+              count += 1
+              i = (yy * imageData.width + xx) * 4
+              sum[0] += data[i]
+              sum[1] += data[i + 1]
+              sum[2] += data[i + 2]
+              sum[3] += data[i + 3]
+        for dy in [0..14]
+          for dx in [0..14]
+            yy = y + dy
+            xx = x + dx
+            if xx < imageData.width and yy < imageData.height
+              i = (yy * imageData.width + xx) * 4
+              outData[i] = sum[0] / count
+              outData[i + 1] = sum[1] / count
+              outData[i + 2] = sum[2] / count
+              outData[i + 3] = sum[3] / count
+    ctx.putImageData out, 0, 0
+    return
+
+  pixelizationHardButton = document.getElementById 'pixelization_hard'
+  pixelizationHardButton.addEventListener 'click', pixelizationHard
+
   # ---------------------------------------------------------
 
   return
