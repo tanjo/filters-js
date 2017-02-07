@@ -40,9 +40,9 @@ draw = (img) ->
       outData[i] = avg
       outData[i + 1] = avg
       outData[i + 2] = avg
-      outData[i + 3] = data[i+3]
+      outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
-    return
+    return out
 
   grayscaleButton = document.getElementById 'grayscale'
   grayscaleButton.addEventListener 'click', grayscale
@@ -124,7 +124,7 @@ draw = (img) ->
       outData[i] = 255 - data[i]
       outData[i + 1] = 255 - data[i + 1]
       outData[i + 2] = 255 - data[i + 2]
-      outData[i + 3] = data[i+3]
+      outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
     return
 
@@ -144,7 +144,7 @@ draw = (img) ->
       outData[i] = filter(data[i])
       outData[i + 1] = filter(data[i + 1])
       outData[i + 2] = filter(data[i + 2])
-      outData[i + 3] = data[i+3]
+      outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
     return
 
@@ -164,7 +164,7 @@ draw = (img) ->
       outData[i] = filter(data[i])
       outData[i + 1] = filter(data[i + 1])
       outData[i + 2] = filter(data[i + 2])
-      outData[i + 3] = data[i+3]
+      outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
     return
 
@@ -315,31 +315,6 @@ draw = (img) ->
 
   # ---------------------------------------------------------
 
-  binarization = () ->
-    out = ctx.createImageData imageData.width, imageData.height
-    outData = out.data
-    THRESHOLD = 127
-    for i in [0...data.length] by 4
-      outData[i] = if data[i] > THRESHOLD then 255 else 0
-      outData[i + 1] = if data[i + 1] > THRESHOLD then 255 else 0
-      outData[i + 2] = if data[i + 2] > THRESHOLD then 255 else 0
-      outData[i + 3] = data[i+3]
-    ctx.putImageData out, 0, 0
-    return
-
-  binarizationButton = document.getElementById 'binarization'
-  binarizationButton.addEventListener 'click', binarization
-
-  # ---------------------------------------------------------
-
-  percentileMethod = () ->
-    return
-
-  percentileMethodButton = document.getElementById 'percentile_method'
-  percentileMethodButton.addEventListener 'click', percentileMethod
-
-  # ---------------------------------------------------------
-
   pixelizationHard = () ->
     out = ctx.createImageData imageData.width, imageData.height
     outData = out.data
@@ -374,6 +349,155 @@ draw = (img) ->
   pixelizationHardButton = document.getElementById 'pixelization_hard'
   pixelizationHardButton.addEventListener 'click', pixelizationHard
 
+  # ---------------------------------------------------------
+
+  binarization = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    THRESHOLD = 127
+    for i in [0...data.length] by 4
+      outData[i] = if data[i] > THRESHOLD then 255 else 0
+      outData[i + 1] = if data[i + 1] > THRESHOLD then 255 else 0
+      outData[i + 2] = if data[i + 2] > THRESHOLD then 255 else 0
+      outData[i + 3] = data[i + 3]
+    ctx.putImageData out, 0, 0
+    return
+
+  binarizationButton = document.getElementById 'binarization'
+  binarizationButton.addEventListener 'click', binarization
+
+  # ---------------------------------------------------------
+
+  percentileMethod = () ->
+    out = grayscale()
+    outData = out.data
+    hist = (0 for [1..256])
+    for i in [0...outData.length] by 4
+      hist[outData[i]] += 1
+    middle = out.width * out.height / 2
+    count = 0
+    target = 0
+    for i in [255..0]
+      count += hist[i]
+      if count >= middle
+        target = i
+        break
+    for i in [0...outData.length] by 4
+      outData[i] = if outData[i] > target then 255 else 0
+      outData[i + 1] = if outData[i + 1] > target then 255 else 0
+      outData[i + 2] = if outData[i + 2] > target then 255 else 0
+      outData[i + 3] = outData[i + 3]
+    ctx.putImageData out, 0, 0
+    return
+
+  percentileMethodButton = document.getElementById 'percentile_method'
+  percentileMethodButton.addEventListener 'click', percentileMethod
+
+  # ---------------------------------------------------------
+
+  filter1 = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    a = [0.73412, 0.647019, 0.07914]
+    for i in [0...data.length] by 4
+      outData[i] = 255 / (1 + Math.exp(a[0] * (127 - data[i])))
+      outData[i + 1] = 255 / (1 + Math.exp(a[1] * (127 - data[i + 1])))
+      outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
+      outData[i + 3] = data[i + 3]
+    ctx.putImageData out, 0, 0
+    return out
+
+  filter1Button = document.getElementById 'filter1'
+  filter1Button.addEventListener 'click', filter1
+
+  # ---------------------------------------------------------
+
+  filter2 = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    a = [0.073412, 0.0647019, 0.07914]
+    for i in [0...data.length] by 4
+      outData[i] = 255 / (1 + Math.exp(a[0] * (127 - data[i])))
+      outData[i + 1] = 255 / (1 + Math.exp(a[1] * (127 - data[i + 1])))
+      outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
+      outData[i + 3] = data[i + 3]
+    ctx.putImageData out, 0, 0
+    return out
+
+  filter2Button = document.getElementById 'filter2'
+  filter2Button.addEventListener 'click', filter2
+
+  # ---------------------------------------------------------
+
+  filter3 = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    a = [0.9, 0.0, 0.5]
+    for i in [0...data.length] by 4
+      outData[i] = 255 / (1 + Math.exp(a[0] * (127 - data[i])))
+      outData[i + 1] = 255 / (1 + Math.exp(a[1] * (127 - data[i + 1])))
+      outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
+      outData[i + 3] = data[i + 3]
+    ctx.putImageData out, 0, 0
+    return out
+
+  filter3Button = document.getElementById 'filter3'
+  filter3Button.addEventListener 'click', filter3
+
+  # ---------------------------------------------------------
+
+  filter4 = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    a = [0.373412, 0.347019, 0.3914]
+    for i in [0...data.length] by 4
+      outData[i] = 255 / (1 + Math.exp(a[0] * (127 - data[i])))
+      outData[i + 1] = 255 / (1 + Math.exp(a[1] * (127 - data[i + 1])))
+      outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
+      outData[i + 3] = data[i + 3]
+    ctx.putImageData out, 0, 0
+    return out
+
+  filter4Button = document.getElementById 'filter4'
+  filter4Button.addEventListener 'click', filter4
+
+  # ---------------------------------------------------------
+
+  filter5 = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    a = [0.73412, 0.647019, 0.7914]
+    for i in [0...data.length] by 4
+      outData[i] = 255 / (1 + Math.exp(a[0] * (127 - data[i])))
+      outData[i + 1] = 255 / (1 + Math.exp(a[1] * (127 - data[i + 1])))
+      outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
+      outData[i + 3] = data[i + 3]
+    ctx.putImageData out, 0, 0
+    return out
+
+  filter5Button = document.getElementById 'filter5'
+  filter5Button.addEventListener 'click', filter5
+
+  # ---------------------------------------------------------
+
+  filter6 = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    a = [0.93412, 0.647019, 0.0057914]
+    for i in [0...data.length] by 4
+      outData[i] = 255 / (1 + Math.exp(a[0] * (127 - data[i])))
+      outData[i + 1] = 255 / (1 + Math.exp(a[1] * (127 - data[i + 1])))
+      outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
+      outData[i + 3] = data[i + 3]
+    ctx.putImageData out, 0, 0
+    return out
+
+  filter6Button = document.getElementById 'filter6'
+  filter6Button.addEventListener 'click', filter6
+
+  # ---------------------------------------------------------
+  # ---------------------------------------------------------
+  # ---------------------------------------------------------
   # ---------------------------------------------------------
 
   return
