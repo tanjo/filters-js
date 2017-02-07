@@ -466,7 +466,7 @@ draw = (img) ->
   filter5 = () ->
     out = ctx.createImageData imageData.width, imageData.height
     outData = out.data
-    a = [0.73412, 0.647019, 0.7914]
+    a = [0.0073412, 0.647019, 0.7914]
     for i in [0...data.length] by 4
       outData[i] = 255 / (1 + Math.exp(a[0] * (127 - data[i])))
       outData[i + 1] = 255 / (1 + Math.exp(a[1] * (127 - data[i + 1])))
@@ -495,6 +495,292 @@ draw = (img) ->
   filter6Button = document.getElementById 'filter6'
   filter6Button.addEventListener 'click', filter6
 
+  # ---------------------------------------------------------
+
+  posterization = (s = 5) ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    # Red
+    sr = s
+    nr = 256 / sr
+    dr = 255 / (sr - 1)
+    br = (0 for [1..256])
+    for i in [0...sr]
+      for j in [Math.floor(i * nr)...Math.floor((i+1) * nr)]
+        br[j] = dr * i
+
+    # Green
+    sg = s
+    ng = 256 / sg
+    dg = 255 / (sg - 1)
+    bg = (0 for [1..256])
+    for i in [0...sg]
+      for j in [Math.floor(i * ng)...Math.floor((i+1) * ng)]
+        bg[j] = dg * i
+    # Blue
+    sb = s
+    nb = 256 / sb
+    db = 255 / (sb - 1)
+    bb = (0 for [1..256])
+    for i in [0...sb]
+      for j in [Math.floor(i * nb)...Math.floor((i+1) * nb)]
+        bb[j] = db * i
+
+    for i in [0...data.length] by 4
+      outData[i] = br[data[i]]
+      outData[i + 1] = bg[data[i + 1]]
+      outData[i + 2] = bb[data[i + 2]]
+      outData[i + 3] = data[i + 3]
+    ctx.putImageData out, 0, 0
+    return out
+
+  posterizationButton = document.getElementById 'posterization'
+  posterizationButton.addEventListener 'click', posterization
+
+  # ---------------------------------------------------------
+
+  medianFilter = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    for y in [1...imageData.height-1]
+      for x in [1...imageData.width-1]
+        i = (y * imageData.width + x) * 4
+        valuesR = []
+        valuesG = []
+        valuesB = []
+        for dy in [-1..1]
+          for dx in [-1..1]
+            di = ((y + dy) * imageData.width + (x + dx)) * 4
+            valuesR.push data[di]
+            valuesG.push data[di + 1]
+            valuesB.push data[di + 2]
+        valuesR.sort (a, b) ->
+          if a > b then return -1
+          if a < b then return 1
+          return 0
+        valuesG.sort (a, b) ->
+          if a > b then return -1
+          if a < b then return 1
+          return 0
+        valuesB.sort (a, b) ->
+          if a > b then return -1
+          if a < b then return 1
+          return 0
+
+        outData[i] = valuesR[4]
+        outData[i + 1] = valuesG[4]
+        outData[i + 2] = valuesB[4]
+        outData[i + 3] = data[i + 3]
+    ctx.putImageData out, 0, 0
+    return out
+
+  medianFilterButton = document.getElementById 'median_filter'
+  medianFilterButton.addEventListener 'click', medianFilter
+
+  # ---------------------------------------------------------
+
+  kaiga = () ->
+    out = posterization(64)
+    outData = out.data
+    for y in [2...imageData.height-2]
+      for x in [2...imageData.width-2]
+        i = (y * imageData.width + x) * 4
+        histR = (0 for [1..256])
+        histG = (0 for [1..256])
+        histB = (0 for [1..256])
+        for dy in [-2..2]
+          for dx in [-2..2]
+            di = ((y + dy) * imageData.width + (x + dx)) * 4
+            histR[data[di]] += 1
+            histG[data[di + 1]] += 1
+            histB[data[di + 2]] += 1
+        maxR = 0
+        maxG = 0
+        maxB = 0
+        valueR = 0
+        valueG = 0
+        valueB = 0
+        for k in [0..255]
+          if maxR < histR[k]
+            maxR = histR[k]
+            valueR = k
+          if maxG < histG[k]
+            maxG = histG[k]
+            valueG = k
+          if maxB < histB[k]
+            maxB = histB[k]
+            valueB = k
+
+        outData[i] = valueR
+        outData[i + 1] = valueG
+        outData[i + 2] = valueB
+        outData[i + 3] = data[i + 3]
+    ctx.putImageData out, 0, 0
+    return out
+
+  kaigaButton = document.getElementById 'kaiga'
+  kaigaButton.addEventListener 'click', kaiga
+
+  # ---------------------------------------------------------
+
+  firFilter = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+
+    a = [1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9]
+
+    for y in [2...imageData.height]
+      for x in [2...imageData.width]
+        i = (y * imageData.width + x) * 4
+        sum = [0, 0, 0]
+        for dy in [-2..0]
+          for dx in [-2..0]
+            ka = (dy + 2) * 3 + (dx + 2)
+            di = ((y + dy) * imageData.width + (x + dx)) * 4
+            for c in [0...3]
+              sum[c] += data[di + c] * a[ka]
+        outData[i] = sum[0]
+        outData[i + 1] = sum[1]
+        outData[i + 2] = sum[2]
+        outData[i + 3] = data[i + 3]
+    ctx.putImageData out, 0, 0
+    return out
+
+  firFilterButton = document.getElementById 'fir_filter'
+  firFilterButton.addEventListener 'click', firFilter
+
+  # ---------------------------------------------------------
+
+  gamma = () ->
+    out = grayscale()
+    outData = out.data
+    max = 255
+    gamma = 1.5
+    for i in [0...outData.length] by 4
+      outData[i] = max * Math.pow(data[i] / max, 1/gamma)
+      outData[i + 1] = max * Math.pow(data[i + 1] / max, 1/gamma)
+      outData[i + 2] = max * Math.pow(data[i + 2] / max, 1/gamma)
+      outData[i + 3] = outData[i + 3]
+    ctx.putImageData out, 0, 0
+    return
+
+  gammaButton = document.getElementById 'gamma'
+  gammaButton.addEventListener 'click', gamma
+
+  # ---------------------------------------------------------
+
+  red = () ->
+    out = grayscale()
+    outData = out.data
+    for i in [0...data.length] by 4
+      r = data[i]
+      g = data[i + 1]
+      b = data[i + 2]
+      max = Math.max(r, g, b)
+      min = Math.min(r, g, b)
+
+      if r == g and r == b
+        h = 0
+      else if r >= g and r >= b
+        h = 60 * ((g - b) / (max - min))
+      else if g >= r and g >= b
+        h = 60 * ((b - r) / (max - min)) + 120
+      else if b >= r and b >= g
+        h = 60 * ((r - g) / (max - min)) + 240
+
+      while h < 0
+        h += 360
+
+      if h <= 30 or h >= 300
+        outData[i] = r
+        outData[i + 1] = g
+        outData[i + 2] = b
+
+    ctx.putImageData out, 0, 0
+    return out
+
+  redButton = document.getElementById 'red'
+  redButton.addEventListener 'click', red
+
+  # ---------------------------------------------------------
+
+  green = () ->
+    out = grayscale()
+    outData = out.data
+    for i in [0...data.length] by 4
+      r = data[i]
+      g = data[i + 1]
+      b = data[i + 2]
+      max = Math.max(r, g, b)
+      min = Math.min(r, g, b)
+
+      if r == g and r == b
+        h = 0
+      else if r >= g and r >= b
+        h = 60 * ((g - b) / (max - min))
+      else if g >= r and g >= b
+        h = 60 * ((b - r) / (max - min)) + 120
+      else if b >= r and b >= g
+        h = 60 * ((r - g) / (max - min)) + 240
+
+      while h < 0
+        h += 360
+
+      if h <= 180 and h >= 30
+        outData[i] = r
+        outData[i + 1] = g
+        outData[i + 2] = b
+
+    ctx.putImageData out, 0, 0
+    return out
+
+  greenButton = document.getElementById 'green'
+  greenButton.addEventListener 'click', green
+
+  # ---------------------------------------------------------
+
+  blue = () ->
+    out = grayscale()
+    outData = out.data
+    for i in [0...data.length] by 4
+      r = data[i]
+      g = data[i + 1]
+      b = data[i + 2]
+      max = Math.max(r, g, b)
+      min = Math.min(r, g, b)
+
+      if r == g and r == b
+        h = 0
+      else if r >= g and r >= b
+        h = 60 * ((g - b) / (max - min))
+      else if g >= r and g >= b
+        h = 60 * ((b - r) / (max - min)) + 120
+      else if b >= r and b >= g
+        h = 60 * ((r - g) / (max - min)) + 240
+
+      while h < 0
+        h += 360
+
+      if h <= 300 and h >= 180
+        outData[i] = r
+        outData[i + 1] = g
+        outData[i + 2] = b
+
+    ctx.putImageData out, 0, 0
+    return out
+
+  blueButton = document.getElementById 'blue'
+  blueButton.addEventListener 'click', blue
+
+  # ---------------------------------------------------------
+  # ---------------------------------------------------------
+  # ---------------------------------------------------------
+  # ---------------------------------------------------------
+  # ---------------------------------------------------------
+  # ---------------------------------------------------------
+  # ---------------------------------------------------------
+  # ---------------------------------------------------------
+  # ---------------------------------------------------------
   # ---------------------------------------------------------
   # ---------------------------------------------------------
   # ---------------------------------------------------------
