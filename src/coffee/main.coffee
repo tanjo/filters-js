@@ -777,6 +777,51 @@ draw = (img) ->
   blueButton.addEventListener 'click', blue
 
   # ---------------------------------------------------------
+
+  simple = () ->
+    out = grayscale()
+    outData = out.data
+
+    unless typeof s is 'number'
+      s = 5
+
+    # Red
+    sr = s
+    nr = 256 / sr
+    dr = 255 / (sr - 1)
+    br = (0 for [1..256])
+    for i in [0...sr]
+      for j in [Math.floor(i * nr)...Math.floor((i+1) * nr)]
+        br[j] = dr * i
+
+    # Green
+    sg = s
+    ng = 256 / sg
+    dg = 255 / (sg - 1)
+    bg = (0 for [1..256])
+    for i in [0...sg]
+      for j in [Math.floor(i * ng)...Math.floor((i+1) * ng)]
+        bg[j] = dg * i
+    # Blue
+    sb = s
+    nb = 256 / sb
+    db = 255 / (sb - 1)
+    bb = (0 for [1..256])
+    for i in [0...sb]
+      for j in [Math.floor(i * nb)...Math.floor((i+1) * nb)]
+        bb[j] = db * i
+
+    for i in [0...data.length] by 4
+      outData[i] = br[outData[i]]
+      outData[i + 1] = bg[outData[i + 1]]
+      outData[i + 2] = bb[outData[i + 2]]
+      outData[i + 3] = outData[i + 3]
+    ctx.putImageData out, 0, 0
+    return out
+
+  simpleButton = document.getElementById 'simple'
+  simpleButton.addEventListener 'click', simple
+
   # ---------------------------------------------------------
   # ---------------------------------------------------------
   # ---------------------------------------------------------
