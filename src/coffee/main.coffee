@@ -1,3 +1,5 @@
+saveFileName = 'image.png'
+
 draw = (img) ->
   canvas = document.getElementById 'result'
   ctx = canvas.getContext '2d'
@@ -14,7 +16,7 @@ draw = (img) ->
     gh = canvas.toDataURL 'png'
     a = document.createElement 'a'
     a.href = gh
-    a.download = 'image.png'
+    a.download = saveFileName
     a.click()
 
   saveButton = document.getElementById 'save'
@@ -25,6 +27,7 @@ draw = (img) ->
 
   original = () ->
     ctx.putImageData imageData, 0, 0
+    saveFileName = "image.png"
     return
 
   originalButton = document.getElementById 'original'
@@ -42,6 +45,7 @@ draw = (img) ->
       outData[i + 2] = avg
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-grayscale.png"
     return out
 
   grayscaleButton = document.getElementById 'grayscale'
@@ -76,6 +80,7 @@ draw = (img) ->
         alphaIndex = (y * imageData.width + x) * 4 + 3
         outData[alphaIndex] = data[alphaIndex] # Alpha
     ctx.putImageData out, 0, 0
+    saveFileName = "image-emboss.png"
     return
 
   embossButton = document.getElementById 'emboss'
@@ -110,6 +115,7 @@ draw = (img) ->
         alphaIndex = (y * imageData.width + x) * 4 + 3
         outData[alphaIndex] = data[alphaIndex] # Alpha
     ctx.putImageData out, 0, 0
+    saveFileName = "image-sharp.png"
     return
 
   sharpButton = document.getElementById 'sharp'
@@ -126,6 +132,7 @@ draw = (img) ->
       outData[i + 2] = 255 - data[i + 2]
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-negative.png"
     return
 
   negativeButton = document.getElementById 'negative'
@@ -146,6 +153,7 @@ draw = (img) ->
       outData[i + 2] = filter(data[i + 2])
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-contrast-enhancement.png"
     return
 
   contrastEnhancementButton = document.getElementById 'contrast_enhancement'
@@ -166,6 +174,7 @@ draw = (img) ->
       outData[i + 2] = filter(data[i + 2])
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-contrast-reduction.png"
     return
 
   contrastReductionButton = document.getElementById 'contrast_reduction'
@@ -204,6 +213,7 @@ draw = (img) ->
         alphaIndex = (y * imageData.width + x) * 4 + 3
         outData[alphaIndex] = data[alphaIndex] # Alpha
     ctx.putImageData out, 0, 0
+    saveFileName = "image-gaussian-filter.png"
     return
 
   gaussianFilterButton = document.getElementById 'gaussian_filter'
@@ -238,6 +248,7 @@ draw = (img) ->
         alphaIndex = (y * imageData.width + x) * 4 + 3
         outData[alphaIndex] = data[alphaIndex] # Alpha
     ctx.putImageData out, 0, 0
+    saveFileName = "image-sobel-filter.png"
     return
 
   sobelFilterButton = document.getElementById 'sobel_filter'
@@ -272,6 +283,7 @@ draw = (img) ->
         alphaIndex = (y * imageData.width + x) * 4 + 3
         outData[alphaIndex] = data[alphaIndex] # Alpha
     ctx.putImageData out, 0, 0
+    saveFileName = "image-laplacian-filter.png"
     return
 
   laplacianFilterButton = document.getElementById 'laplacian_filter'
@@ -308,6 +320,7 @@ draw = (img) ->
               outData[i + 2] = sum[2] / count
               outData[i + 3] = sum[3] / count
     ctx.putImageData out, 0, 0
+    saveFileName = "image-pixelization.png"
     return
 
   pixelizationButton = document.getElementById 'pixelization'
@@ -344,6 +357,7 @@ draw = (img) ->
               outData[i + 2] = sum[2] / count
               outData[i + 3] = sum[3] / count
     ctx.putImageData out, 0, 0
+    saveFileName = "image-pixelization-hard.png"
     return
 
   pixelizationHardButton = document.getElementById 'pixelization_hard'
@@ -361,6 +375,7 @@ draw = (img) ->
       outData[i + 2] = if data[i + 2] > THRESHOLD then 255 else 0
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-binarization.png"
     return
 
   binarizationButton = document.getElementById 'binarization'
@@ -388,6 +403,7 @@ draw = (img) ->
       outData[i + 2] = if outData[i + 2] > target then 255 else 0
       outData[i + 3] = outData[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-percentile-method.png"
     return
 
   percentileMethodButton = document.getElementById 'percentile_method'
@@ -405,6 +421,7 @@ draw = (img) ->
       outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-filter1.png"
     return out
 
   filter1Button = document.getElementById 'filter1'
@@ -422,6 +439,7 @@ draw = (img) ->
       outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-filter2.png"
     return out
 
   filter2Button = document.getElementById 'filter2'
@@ -439,6 +457,7 @@ draw = (img) ->
       outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-filter3.png"
     return out
 
   filter3Button = document.getElementById 'filter3'
@@ -456,6 +475,7 @@ draw = (img) ->
       outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-filter4.png"
     return out
 
   filter4Button = document.getElementById 'filter4'
@@ -473,6 +493,7 @@ draw = (img) ->
       outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-filter5.png"
     return out
 
   filter5Button = document.getElementById 'filter5'
@@ -490,6 +511,7 @@ draw = (img) ->
       outData[i + 2] = 255 / (1 + Math.exp(a[2] * (127 - data[i + 2])))
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-filter6.png"
     return out
 
   filter6Button = document.getElementById 'filter6'
@@ -536,6 +558,7 @@ draw = (img) ->
       outData[i + 2] = bb[data[i + 2]]
       outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-posterization.png"
     return out
 
   posterizationButton = document.getElementById 'posterization'
@@ -576,6 +599,7 @@ draw = (img) ->
         outData[i + 2] = valuesB[4]
         outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-median-filter.png"
     return out
 
   medianFilterButton = document.getElementById 'median_filter'
@@ -620,6 +644,7 @@ draw = (img) ->
         outData[i + 2] = valueB
         outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-kaiga.png"
     return out
 
   kaigaButton = document.getElementById 'kaiga'
@@ -648,6 +673,7 @@ draw = (img) ->
         outData[i + 2] = sum[2]
         outData[i + 3] = data[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-fir-filter.png"
     return out
 
   firFilterButton = document.getElementById 'fir_filter'
@@ -666,6 +692,7 @@ draw = (img) ->
       outData[i + 2] = max * Math.pow(data[i + 2] / max, 1/gamma)
       outData[i + 3] = outData[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-gamma.png"
     return
 
   gammaButton = document.getElementById 'gamma'
@@ -701,6 +728,7 @@ draw = (img) ->
         outData[i + 2] = b
 
     ctx.putImageData out, 0, 0
+    saveFileName = "image-red.png"
     return out
 
   redButton = document.getElementById 'red'
@@ -736,6 +764,7 @@ draw = (img) ->
         outData[i + 2] = b
 
     ctx.putImageData out, 0, 0
+    saveFileName = "image-green.png"
     return out
 
   greenButton = document.getElementById 'green'
@@ -771,6 +800,7 @@ draw = (img) ->
         outData[i + 2] = b
 
     ctx.putImageData out, 0, 0
+    saveFileName = "image-blue.png"
     return out
 
   blueButton = document.getElementById 'blue'
@@ -817,6 +847,7 @@ draw = (img) ->
       outData[i + 2] = bb[outData[i + 2]]
       outData[i + 3] = outData[i + 3]
     ctx.putImageData out, 0, 0
+    saveFileName = "image-simple.png"
     return out
 
   simpleButton = document.getElementById 'simple'
