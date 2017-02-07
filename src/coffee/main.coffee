@@ -500,6 +500,10 @@ draw = (img) ->
   posterization = (s = 5) ->
     out = ctx.createImageData imageData.width, imageData.height
     outData = out.data
+
+    unless typeof s is 'number'
+      s = 5
+
     # Red
     sr = s
     nr = 256 / sr
