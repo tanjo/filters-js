@@ -61,3 +61,12 @@ https://tanjo.xyz/filters-js
 
 - ミニチュア風
 - 2枚使って 9 : 1 合成
+
+## Development
+
+### package.json の更新方法
+
+```
+npm i npm-check-updates
+node_modules/npm-check-updates/bin/npm-check-updates -u
+```
