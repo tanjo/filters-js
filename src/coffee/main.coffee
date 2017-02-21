@@ -854,8 +854,30 @@ draw = (img) ->
   simpleButton.addEventListener 'click', simple
 
   # ---------------------------------------------------------
-  # ---------------------------------------------------------
-  # ---------------------------------------------------------
+
+  secret = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+    for i in [0...data.length] by 4
+      outData[i] = data[i]
+      outData[i + 1] = data[i + 1]
+      outData[i + 2] = data[i + 2]
+      outData[i + 3] = data[i + 3]
+
+    ctx.putImageData out, 0, 0
+
+    ctx.font = "64px 'ＭＳ Ｐゴシック'"
+    metrics = ctx.measureText "㊙"
+    x = (imageData.width - metrics.width) / 2
+    y = (imageData.height - metrics.width)
+    ctx.fillStyle = "red"
+    ctx.fillText "㊙", x, y
+
+    saveFileName = "image-secret.png"
+
+  secretButton = document.getElementById 'secret'
+  secretButton.addEventListener 'click', secret
+
   # ---------------------------------------------------------
   # ---------------------------------------------------------
   # ---------------------------------------------------------
