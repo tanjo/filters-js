@@ -1,1 +1,55 @@
-#contents{width:100%;margin:0 auto;text-align:center}input[type=button]{outline:0;margin-top:10px;margin-bottom:10px;margin-left:3px;margin-right:3px;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;font-size:1em;background-color:#3bc0c4;color:#fff;border-style:none;border-radius:10px;box-shadow:0 4px 4px -2px #3aa2be}input[type=button]:active{outline:0;margin-top:10px;margin-bottom:10px;margin-left:3px;margin-right:3px;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;font-size:1em;background-color:#3aa1a4;color:#fff;border-style:none;border-radius:10px;box-shadow:0 4px 4px -2px #487e8c}input[type=button]:target{outline:0;margin-top:10px;margin-bottom:10px;margin-left:3px;margin-right:3px;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;font-size:1em;background-color:#3aa1a4;color:#fff;border-style:none;border-radius:10px;box-shadow:0 4px 4px -2px #487e8c}
+#contents {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center; }
+
+input[type="button"] {
+  outline: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 3px;
+  margin-right: 3px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 1.0em;
+  background-color: #3bc0c4;
+  color: white;
+  border-style: none;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px -2px #3aa2be; }
+
+input[type="button"]:active {
+  outline: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 3px;
+  margin-right: 3px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 1.0em;
+  background-color: #3aa1a4;
+  color: white;
+  border-style: none;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px -2px #487e8c; }
+
+input[type="button"]:target {
+  outline: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 3px;
+  margin-right: 3px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 1.0em;
+  background-color: #3aa1a4;
+  color: white;
+  border-style: none;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px -2px #487e8c; }

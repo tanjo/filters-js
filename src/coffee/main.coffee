@@ -854,6 +854,107 @@ draw = (img) ->
   simpleButton.addEventListener 'click', simple
 
   # ---------------------------------------------------------
+
+  lorentz = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+
+    tmp = ctx.createImageData imageData.width, imageData.height
+    tmpData = tmp.data
+
+    ranks = [51, 102, 153, 204, 255]
+
+    counts =
+      r:
+        51: 0
+        102: 0
+        153: 0
+        204: 0
+        255: 0
+      g:
+        51: 0
+        102: 0
+        153: 0
+        204: 0
+        255: 0
+      b:
+        51: 0
+        102: 0
+        153: 0
+        204: 0
+        255: 0
+
+    for i in [0...data.length] by 4
+      r = data[i]
+      g = data[i + 1]
+      b = data[i + 2]
+
+      isEndR = false
+      isEndG = false
+      isEndB = false
+
+      for rank in ranks
+        if r <= rank and isEndR is false
+          counts.r[rank] += 1
+          isEndR = true
+          tmpData[i] = rank
+        if g <= rank and isEndG is false
+          counts.g[rank] += 1
+          isEndG = true
+          tmpData[i + 1] = rank
+        if b <= rank and isEndB is false
+          counts.b[rank] += 1
+          isEndB = true
+          tmpData[i + 2] = rank
+        if isEndR and isEndG and isEndB
+          tmpData[i + 3] = data[i + 3]
+          break
+
+    ratio =
+      r:
+        51: 0
+        102: 0
+        153: 0
+        204: 0
+        255: 0
+      g:
+        51: 0
+        102: 0
+        153: 0
+        204: 0
+        255: 0
+      b:
+        51: 0
+        102: 0
+        153: 0
+        204: 0
+        255: 0
+
+    sum = data.length / 4
+    sumR = 0
+    sumG = 0
+    sumB = 0
+    for rank in ranks
+      sumR += counts.r[rank]
+      sumG += counts.g[rank]
+      sumB += counts.b[rank]
+      ratio.r[rank] = sumR / sum
+      ratio.g[rank] = sumG / sum
+      ratio.b[rank] = sumB / sum
+
+    for i in [0...data.length] by 4
+      outData[i] = data[i] * ratio.r[tmpData[i]]
+      outData[i + 1] = data[i + 1] * ratio.g[tmpData[i + 1]]
+      outData[i + 2] = data[i + 2] * ratio.b[tmpData[i + 2]]
+      outData[i + 3] = data[i + 3]
+
+    ctx.putImageData out, 0, 0
+    saveFileName = "image-lorentz.png"
+    return out
+
+  lorentzButton = document.getElementById 'lorentz'
+  lorentzButton.addEventListener 'click', lorentz
+
   # ---------------------------------------------------------
   # ---------------------------------------------------------
   # ---------------------------------------------------------

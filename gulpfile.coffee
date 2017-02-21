@@ -1,52 +1,43 @@
 gulp = require 'gulp'
-coffee = require 'gulp-coffee'
-pug = require 'gulp-pug'
+nodemon = require 'gulp-nodemon'
+plumber = require 'gulp-plumber'
+livereload = require 'gulp-livereload'
 sass = require 'gulp-sass'
+pug = require 'gulp-pug'
+coffee = require 'gulp-coffee'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
 cleanCSS = require 'gulp-clean-css'
-del = require 'del'
-runSequence = require 'run-sequence'
+notify = require 'gulp-notify'
 
-gulp.task 'clean', () ->
-  del './gen/**/*'
+gulp.task 'sass', ->
+  gulp.src './src/sass/*.scss'
+    .pipe plumber(errorHandler: notify.onError '<%= error.message %>')
+    .pipe sass()
+    .pipe concat 'filters.css'
+    .pipe gulp.dest './bin/css'
+    .pipe livereload()
 
-gulp.task 'coffee', () ->
+gulp.task 'coffee', ->
   gulp.src './src/coffee/*.coffee'
-      .pipe coffee()
-      .pipe gulp.dest './gen/js'
+    .pipe plumber(errorHandler: notify.onError '<%= error.message %>')
+    .pipe coffee()
+    .pipe concat 'filters.js'
+    .pipe gulp.dest './bin/js'
+    .pipe livereload()
 
-gulp.task 'pug', () ->
+gulp.task 'pug', ->
   gulp.src './src/pug/*.pug'
+    .pipe plumber(errorHandler: notify.onError '<%= error.message %>')
     .pipe pug
       pretty: true
     .pipe gulp.dest './'
+    .pipe livereload()
 
-gulp.task 'sass', () ->
-  gulp.src './src/sass/*.scss'
-    .pipe sass()
-    .pipe gulp.dest './gen/css'
+gulp.task 'watch', ->
+  livereload.listen()
+  gulp.watch './src/sass/*.scss', ['sass']
+  gulp.watch './src/coffee/*.coffee', ['coffee']
+  gulp.watch './src/pug/*.pug', ['pug']
 
-gulp.task 'js', () ->
-  gulp.src ['./gen/js/*.js']
-    .pipe concat 'filters.js'
-    .pipe uglify()
-    .pipe gulp.dest './bin/js'
-
-gulp.task 'css', () ->
-  gulp.src ['./gen/css/*.css']
-    .pipe concat 'filters.css'
-    .pipe cleanCSS()
-    .pipe gulp.dest './bin/css'
-
-gulp.task 'compile', () ->
-  runSequence('clean', 'coffee', 'sass', 'pug', 'js', 'css')
-
-gulp.task 'default', () ->
-  runSequence('compile')
-
-gulp.task 'watch', () ->
-  coffeePath = './src/coffee/*.coffee'
-  pugPath = './src/pug/*.pug'
-  sassPath = './src/sass/*.scss'
-  gulp.watch [coffeePath, pugPath, sassPath], ['compile']
+gulp.task 'default', ['sass', 'coffee', 'pug', 'watch']
