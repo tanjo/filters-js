@@ -931,105 +931,51 @@
     simpleButton = document.getElementById('simple');
     simpleButton.addEventListener('click', simple);
     lorentz = function() {
-      var b, counts, g, i, isEndB, isEndG, isEndR, l, len, len1, m, n, o, out, outData, r, rank, ranks, ratio, ref, ref1, sum, sumB, sumG, sumR, tmp, tmpData;
+      var b, counts, g, i, isEndB, isEndG, isEndR, l, m, n, o, out, outData, r, ratio, ref, ref1, sum, sumB, sumG, sumR;
       out = ctx.createImageData(imageData.width, imageData.height);
       outData = out.data;
-      tmp = ctx.createImageData(imageData.width, imageData.height);
-      tmpData = tmp.data;
-      ranks = [51, 102, 153, 204, 255];
       counts = {
-        r: {
-          51: 0,
-          102: 0,
-          153: 0,
-          204: 0,
-          255: 0
-        },
-        g: {
-          51: 0,
-          102: 0,
-          153: 0,
-          204: 0,
-          255: 0
-        },
-        b: {
-          51: 0,
-          102: 0,
-          153: 0,
-          204: 0,
-          255: 0
-        }
+        r: {},
+        g: {},
+        b: {}
       };
-      for (i = l = 0, ref = data.length; l < ref; i = l += 4) {
+      for (i = l = 0; l < 256; i = ++l) {
+        counts.r[i] = 0;
+        counts.g[i] = 0;
+        counts.b[i] = 0;
+      }
+      for (i = m = 0, ref = data.length; m < ref; i = m += 4) {
         r = data[i];
         g = data[i + 1];
         b = data[i + 2];
         isEndR = false;
         isEndG = false;
         isEndB = false;
-        for (m = 0, len = ranks.length; m < len; m++) {
-          rank = ranks[m];
-          if (r <= rank && isEndR === false) {
-            counts.r[rank] += 1;
-            isEndR = true;
-            tmpData[i] = rank;
-          }
-          if (g <= rank && isEndG === false) {
-            counts.g[rank] += 1;
-            isEndG = true;
-            tmpData[i + 1] = rank;
-          }
-          if (b <= rank && isEndB === false) {
-            counts.b[rank] += 1;
-            isEndB = true;
-            tmpData[i + 2] = rank;
-          }
-          if (isEndR && isEndG && isEndB) {
-            tmpData[i + 3] = data[i + 3];
-            break;
-          }
-        }
+        counts.r[r] += 1;
+        counts.g[g] += 1;
+        counts.b[b] += 1;
       }
       ratio = {
-        r: {
-          51: 0,
-          102: 0,
-          153: 0,
-          204: 0,
-          255: 0
-        },
-        g: {
-          51: 0,
-          102: 0,
-          153: 0,
-          204: 0,
-          255: 0
-        },
-        b: {
-          51: 0,
-          102: 0,
-          153: 0,
-          204: 0,
-          255: 0
-        }
+        r: {},
+        g: {},
+        b: {}
       };
       sum = data.length / 4;
       sumR = 0;
       sumG = 0;
       sumB = 0;
-      for (n = 0, len1 = ranks.length; n < len1; n++) {
-        rank = ranks[n];
-        sumR += counts.r[rank];
-        sumG += counts.g[rank];
-        sumB += counts.b[rank];
-        ratio.r[rank] = sumR / sum;
-        ratio.g[rank] = sumG / sum;
-        ratio.b[rank] = sumB / sum;
+      for (i = n = 0; n < 256; i = ++n) {
+        sumR += counts.r[i];
+        sumG += counts.g[i];
+        sumB += counts.b[i];
+        ratio.r[i] = sumR / sum;
+        ratio.g[i] = sumG / sum;
+        ratio.b[i] = sumB / sum;
       }
       for (i = o = 0, ref1 = data.length; o < ref1; i = o += 4) {
-        outData[i] = data[i] * ratio.r[tmpData[i]];
-        outData[i + 1] = data[i + 1] * ratio.g[tmpData[i + 1]];
-        outData[i + 2] = data[i + 2] * ratio.b[tmpData[i + 2]];
+        outData[i] = data[i] * ratio.r[data[i]];
+        outData[i + 1] = data[i + 1] * ratio.g[data[i + 1]];
+        outData[i + 2] = data[i + 2] * ratio.b[data[i + 2]];
         outData[i + 3] = data[i + 3];
       }
       ctx.putImageData(out, 0, 0);
