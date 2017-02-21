@@ -56,6 +56,8 @@ https://tanjo.xyz/filters-js
 <img src="resources/image-blue.png" width="120px">
 ### シンプル
 <img src="resources/image-simple.png" width="120px">
+### ローレンツ曲線
+<img src="resources/image-lorentz.png" width="120px">
 
 ## TODO
 
