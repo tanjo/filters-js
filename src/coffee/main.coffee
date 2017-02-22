@@ -900,9 +900,9 @@ draw = (img) ->
       ratio.b[i] = sumB / sum
 
     for i in [0...data.length] by 4
-      outData[i] = data[i] * ratio.r[data[i]]
-      outData[i + 1] = data[i + 1] * ratio.g[data[i + 1]]
-      outData[i + 2] = data[i + 2] * ratio.b[data[i + 2]]
+      outData[i] = 255 * ratio.r[data[i]]
+      outData[i + 1] = 255 * ratio.g[data[i + 1]]
+      outData[i + 2] = 255 * ratio.b[data[i + 2]]
       outData[i + 3] = data[i + 3]
 
     ctx.putImageData out, 0, 0
@@ -913,6 +913,64 @@ draw = (img) ->
   lorentzButton.addEventListener 'click', lorentz
 
   # ---------------------------------------------------------
+
+  lorentzkai = () ->
+    out = ctx.createImageData imageData.width, imageData.height
+    outData = out.data
+
+    counts =
+      r: {}
+      g: {}
+      b: {}
+
+    for i in [0...256]
+      counts.r[i] = 0
+      counts.g[i] = 0
+      counts.b[i] = 0
+
+    for i in [0...data.length] by 4
+      r = data[i]
+      g = data[i + 1]
+      b = data[i + 2]
+
+      isEndR = false
+      isEndG = false
+      isEndB = false
+
+      counts.r[r] += 1
+      counts.g[g] += 1
+      counts.b[b] += 1
+
+    ratio =
+      r: {}
+      g: {}
+      b: {}
+
+    sum = data.length / 4
+    sumR = 0
+    sumG = 0
+    sumB = 0
+    for i in [0...256]
+      sumR += counts.r[i]
+      sumG += counts.g[i]
+      sumB += counts.b[i]
+      ratio.r[i] = sumR / sum
+      ratio.g[i] = sumG / sum
+      ratio.b[i] = sumB / sum
+
+    for i in [0...data.length] by 4
+      outData[i] = data[i] * ratio.r[data[i]]
+      outData[i + 1] = data[i + 1] * ratio.g[data[i + 1]]
+      outData[i + 2] = data[i + 2] * ratio.b[data[i + 2]]
+      outData[i + 3] = data[i + 3]
+
+    ctx.putImageData out, 0, 0
+    saveFileName = "image-lorentzkai.png"
+    return out
+
+  lorentzkaiButton = document.getElementById 'lorentzkai'
+  lorentzkaiButton.addEventListener 'click', lorentzkai
+
   # ---------------------------------------------------------
   # ---------------------------------------------------------
   # ---------------------------------------------------------

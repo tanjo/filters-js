@@ -58,7 +58,8 @@ https://tanjo.xyz/filters-js
 <img src="resources/image-simple.png" width="120px">
 ### ローレンツ曲線
 <img src="resources/image-lorentz.png" width="120px">
-
+### ローレンツ曲線（改造）
+<img src="resources/image-lorentzkai.png" width="120px">
 ## TODO
 
 - ミニチュア風

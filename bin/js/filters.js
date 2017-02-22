@@ -4,7 +4,7 @@
   saveFileName = 'image.png';
 
   draw = function(img) {
-    var binarization, binarizationButton, blue, blueButton, canvas, contrastEnhancement, contrastEnhancementButton, contrastReduction, contrastReductionButton, ctx, data, emboss, embossButton, filter1, filter1Button, filter2, filter2Button, filter3, filter3Button, filter4, filter4Button, filter5, filter5Button, filter6, filter6Button, firFilter, firFilterButton, gamma, gammaButton, gaussianFilter, gaussianFilterButton, grayscale, grayscaleButton, green, greenButton, imageData, kaiga, kaigaButton, laplacianFilter, laplacianFilterButton, lorentz, lorentzButton, medianFilter, medianFilterButton, negative, negativeButton, original, originalButton, percentileMethod, percentileMethodButton, pixelization, pixelizationButton, pixelizationHard, pixelizationHardButton, posterization, posterizationButton, red, redButton, save, saveButton, sharp, sharpButton, simple, simpleButton, sobelFilter, sobelFilterButton;
+    var binarization, binarizationButton, blue, blueButton, canvas, contrastEnhancement, contrastEnhancementButton, contrastReduction, contrastReductionButton, ctx, data, emboss, embossButton, filter1, filter1Button, filter2, filter2Button, filter3, filter3Button, filter4, filter4Button, filter5, filter5Button, filter6, filter6Button, firFilter, firFilterButton, gamma, gammaButton, gaussianFilter, gaussianFilterButton, grayscale, grayscaleButton, green, greenButton, imageData, kaiga, kaigaButton, laplacianFilter, laplacianFilterButton, lorentz, lorentzButton, lorentzkai, lorentzkaiButton, medianFilter, medianFilterButton, negative, negativeButton, original, originalButton, percentileMethod, percentileMethodButton, pixelization, pixelizationButton, pixelizationHard, pixelizationHardButton, posterization, posterizationButton, red, redButton, save, saveButton, sharp, sharpButton, simple, simpleButton, sobelFilter, sobelFilterButton;
     canvas = document.getElementById('result');
     ctx = canvas.getContext('2d');
     canvas.width = img.width;
@@ -973,9 +973,9 @@
         ratio.b[i] = sumB / sum;
       }
       for (i = o = 0, ref1 = data.length; o < ref1; i = o += 4) {
-        outData[i] = data[i] * ratio.r[data[i]];
-        outData[i + 1] = data[i + 1] * ratio.g[data[i + 1]];
-        outData[i + 2] = data[i + 2] * ratio.b[data[i + 2]];
+        outData[i] = 255 * ratio.r[data[i]];
+        outData[i + 1] = 255 * ratio.g[data[i + 1]];
+        outData[i + 2] = 255 * ratio.b[data[i + 2]];
         outData[i + 3] = data[i + 3];
       }
       ctx.putImageData(out, 0, 0);
@@ -984,6 +984,60 @@
     };
     lorentzButton = document.getElementById('lorentz');
     lorentzButton.addEventListener('click', lorentz);
+    lorentzkai = function() {
+      var b, counts, g, i, isEndB, isEndG, isEndR, l, m, n, o, out, outData, r, ratio, ref, ref1, sum, sumB, sumG, sumR;
+      out = ctx.createImageData(imageData.width, imageData.height);
+      outData = out.data;
+      counts = {
+        r: {},
+        g: {},
+        b: {}
+      };
+      for (i = l = 0; l < 256; i = ++l) {
+        counts.r[i] = 0;
+        counts.g[i] = 0;
+        counts.b[i] = 0;
+      }
+      for (i = m = 0, ref = data.length; m < ref; i = m += 4) {
+        r = data[i];
+        g = data[i + 1];
+        b = data[i + 2];
+        isEndR = false;
+        isEndG = false;
+        isEndB = false;
+        counts.r[r] += 1;
+        counts.g[g] += 1;
+        counts.b[b] += 1;
+      }
+      ratio = {
+        r: {},
+        g: {},
+        b: {}
+      };
+      sum = data.length / 4;
+      sumR = 0;
+      sumG = 0;
+      sumB = 0;
+      for (i = n = 0; n < 256; i = ++n) {
+        sumR += counts.r[i];
+        sumG += counts.g[i];
+        sumB += counts.b[i];
+        ratio.r[i] = sumR / sum;
+        ratio.g[i] = sumG / sum;
+        ratio.b[i] = sumB / sum;
+      }
+      for (i = o = 0, ref1 = data.length; o < ref1; i = o += 4) {
+        outData[i] = data[i] * ratio.r[data[i]];
+        outData[i + 1] = data[i + 1] * ratio.g[data[i + 1]];
+        outData[i + 2] = data[i + 2] * ratio.b[data[i + 2]];
+        outData[i + 3] = data[i + 3];
+      }
+      ctx.putImageData(out, 0, 0);
+      saveFileName = "image-lorentzkai.png";
+      return out;
+    };
+    lorentzkaiButton = document.getElementById('lorentzkai');
+    lorentzkaiButton.addEventListener('click', lorentzkai);
   };
 
   window.onload = function() {
